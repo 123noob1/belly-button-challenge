@@ -40,71 +40,163 @@ function setPlots(subjectId) {
         });
     };
 
-    // Set layout variable used by hbar and scatter charts
-    let layout = {
-        hoverlabel: {
-            align: 'left'
-        },
-        margin: {
-            l: 75,
-            r: 0,
-            b: 50,
-            t: 5,
-            pad: 4
-        }
-    };
-
-    // Set up hbar chart display top 10 where x: sample_values, y: otu_ids (OTU #), and otu_labels for hovertext
+    // Set variables used to store information from the json caller
     dataPromise.then(data => {
-        let sample = data.samples.filter(sample => sample.id.toString() === subjectId)[0];
-        let sampleValues = sample.sample_values.slice(0, 10).reverse();
-        let sampleIds = sample.otu_ids.slice(0, 10).reverse().map(value => 'OTU ' + value);
-        let sampleLabels = setTextLabel(sample.otu_labels.slice(0, 10).reverse());
+        let samples = data.samples;
+        let sample = samples.filter(sample => sample.id.toString() === subjectId)[0];
+        let sampleValues = sample.sample_values;
+        let sampleIds = sample.otu_ids;
 
-        var data = [{
+        // HBar chart setup, displaying top 10 where x: sample_values, y: otu_ids (OTU #), and otu_labels for hovertext
+        let data1 = [{
             type: 'bar',
-            x: sampleValues,
-            y: sampleIds,
-            text: sampleLabels,
+            x: sampleValues.slice(0, 10).reverse(),
+            y: sampleIds.slice(0, 10).reverse().map(v => 'OTU ' + v),
+            text: setTextLabel(sample.otu_labels.slice(0, 10).reverse()),
             orientation: 'h',
             marker: {
                 color: 'rgba(55, 128, 191, 0.75)'
             }
-          }];
-          
-        Plotly.newPlot('bar', data, layout);
-    });
+        }];
 
-    // Set up the scatter plot chart where x: otu_ids, y: sample_values, marker size: sample_values, marker colors: otu_ids, text values: otu_labels
-    dataPromise.then(data => {
-        let sample = data.samples.filter(sample => sample.id.toString() === subjectId)[0];
-        let sampleValues = sample.sample_values;
-        let sampleIds = sample.otu_ids;
-        let sampleLabels = setTextLabel(sample.otu_labels);
+        // Set layout for the HBar chart
+        let layout1 = {
+            hoverlabel: {
+                align: 'left'
+            },
+            margin: {
+                l: 75,
+                r: 0,
+                b: 50,
+                t: 5,
+                pad: 4
+            }
+        };
 
-        var data = [{
+        Plotly.newPlot('bar', data1, layout1);
+
+        // Scatter Plot chart setup, display samples where x: otu_ids, y: sample_values, marker size: sample_values, marker colors: otu_ids, text values: otu_labels
+        let data2 = [{
             type: 'scatter',
             mode: 'markers',
             x: sampleIds,
             y: sampleValues,
-            text: sampleLabels,
+            text: setTextLabel(sample.otu_labels),
             marker: {
                 size: sampleValues,
-                color: [0, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500]
+                color: sampleIds,
+                colorscale: 'Oranges'
             }
-          }];
+        }];
+
+        // Set layout for the HBar chart
+        let layout2 = {
+            hoverlabel: {
+                align: 'left'
+            },
+            margin: {
+                l: 50,
+                r: 50,
+                b: 50,
+                t: 50,
+                pad: 4
+            }
+        };
           
-        Plotly.newPlot('bubble', data, layout);
-    });
+        Plotly.newPlot('bubble', data2, layout2);
 
-    // BONUS: Advanced Challenge Assignment (Optional)
-    //        Create a gauge chart to plot the weekly washing frequency of the individual
+        // BONUS: Advanced Challenge Assignment (Optional)
+        //        Create a gauge chart to plot the weekly washing frequency of the individual
+        // Set up the wash frequency based on the selected subject id
+        let wFreq = data.metadata.filter(sample => sample.id.toString() === subjectId)[0].wfreq;
 
+        // Set up the gauge chart using scatter (for arrow/pointer) and pie charts (for the gauge) combined
+        let gaugeData = [
+            // config the arrow base position
+            {
+                type: 'scatter',
+                x: [0],
+                y: [0],
+                marker: {size: 18, color: '850000'},
+                showlegend: false
+            },
+            // config the gauge
+            {
+                type: 'pie',
+                rotation: 90,
+                values: [50/9, 50/9, 50/9, 50/9, 50/9, 50/9, 50/9, 50/9, 50/9, 50],
+                text: ['0-1', '1-2', '2-3', '3-4', '4-5', '5-6', '6-7', '7-8', '8-9'],
+                hole: 0.5,
+                textposition: 'inside',
+                showlegend: false,
+                direction: 'clockwise',
+                textinfo: "text",
+                marker: {
+                    colors: [
+                        'rgb(248,243,236)', 
+                        'rgb(244,241,228)', 
+                        'rgb(233,230,201)',
+                        'rgb(229,232,176)', 
+                        'rgb(213,229,153)', 
+                        'rgb(183,205,143)', 
+                        'rgb(138,192,134)',
+                        'rgb(137,188,141)', 
+                        'rgb(132,181,137)', 
+                        'white'
+                    ],
+                    labels: ['0-1', '1-2', '2-3', '3-4', '4-5', '5-6', '6-7', '7-8', '8-9', ""],
+                    line: {
+                        color: 'brown',
+                        width: [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
+                    }
+                }
+            }
+        ];
+
+        //Set gauge layout and adjust the position of the needle using the gaugePointer() function and wash frequency
+        let gaugeLayout = {
+            title: "<b>Belly Button Washing Frequency</b> <br>Scrubs Per Week</br>",
+            shapes: [{
+                type: 'path',
+                path: gaugePointer(wFreq),
+                fillcolor: '850000',
+                line: { color: '850000' }
+            }],
+            autosize: true,
+            showlegend: false,
+            hovermode: false,
+            xaxis: { zeroline: false, showgrid: false, visible: false, range: [-1, 1], fixedrange: true },
+            yaxis: { zeroline: false, showgrid: false, visible: false, range: [-1, 1], fixedrange: true  }
+        };
+
+        Plotly.newPlot('gauge', gaugeData, gaugeLayout, {displayModeBar: false});
+    })
 };
 
+// When the sample id dropdown is changed
 function optionChanged(subjectId) {
     setDemographicInfo(subjectId);
     setPlots(subjectId);
+};
+
+// Trig to calculate meter point and create the needle dimension
+function gaugePointer(value){
+	
+    var deg = (180 / 9) * value;
+    var radius = 0.5;
+    var radians = (deg * Math.PI) / 180;
+    var x = -1 * radius * Math.cos(radians);
+    var y = radius * Math.sin(radians);
+
+    // Path: may have to change to create a better triangle
+    var mainPath = 'M -.0 -0.035 L .0 0.035 L ',
+        pathX = String(x),
+        space = ' ',
+        pathY = String(y),
+        pathEnd = ' Z';
+    var path = mainPath.concat(pathX,space,pathY,pathEnd);
+	
+	return path;
 };
 
 // Starter/init function
