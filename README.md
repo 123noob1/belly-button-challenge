@@ -5,21 +5,21 @@ The dataset reveals that a small handful of microbial species (also called opera
 
 ## Instructions
 Use the JS D3 library to read into <code>https://2u-data-curriculum-team.s3.amazonaws.com/dataviz-classroom/v1.1/14-Interactive-Web-Visualizations/02-Homework/samples.json</code> (shown in the <code>samples.json</code>) then create the following information and visuals:
-1) Create a dropdown menu to allow selection of the current sample ID.
+1) Create a dropdown menu to allow selection of the current sample ID.</br>
 ![Alt text](/screenshots/dropdown.png)
-2) Create a demographic information to display the metadata information from the dataset based on current selected sample ID.
+2) Create a demographic information to display the metadata information from the dataset based on current selected sample ID.</br>
 ![Alt text](/screenshots/demographic_info.png)
 3) Create a horizontal bar chart to display the top 10 OTUs found based on current selected sample ID.
     - Use <code>sample_values</code> as the values.
     - Use <code>otu_ids</code> as the labels.
-    - Use <code>otu_labels</code> as the hovertext for the chart.
+    - Use <code>otu_labels</code> as the hovertext for the chart.</br>
 ![Alt text](/screenshots/hbar.png)
 4) Create a bubble chart using scatter plot chart to display each sample.
     - Use <code> otu_ids</code> for the x values and marker colors.
     - Use <code>sample_values</code> for the y values and marker size.
-    - Use <code>otu_labels</code> for the text values.
+    - Use <code>otu_labels</code> for the text values.</br>
 ![Alt text](/screenshots/bubble.png)
-5) <b>BONUS:</b> (Optional) Create a gauge chart displaying the washing frequency of the individual (sample ID).
+5) <b>BONUS:</b> (Optional) Create a gauge chart displaying the washing frequency of the individual (sample ID).</br>
 ![Alt text](/screenshots/gauge.png)
 
 ## References:
