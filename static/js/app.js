@@ -94,7 +94,7 @@ function setPlots(subjectId) {
             hoverlabel: {
                 align: 'left'
             },
-            xaxis: {title: 'OUT ID'},
+            xaxis: {title: 'OTU ID'},
             margin: {
                 l: 50,
                 r: 50,
