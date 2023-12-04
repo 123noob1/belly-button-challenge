@@ -22,8 +22,8 @@ Use the JS D3 library to read into <code>https://2u-data-curriculum-team.s3.amaz
 6) <b>BONUS:</b> (Optional) Create a gauge chart displaying the washing frequency of the individual (sample ID).</br>
 ![Alt text](/screenshots/gauge.png)
 ## References:
-- <em>For gauge chart:</em>
+- <u>For gauge chart:</u>
     - https://codepen.io/ascotto/pen/eGNaqe?editors=0011
     - https://stackoverflow.com/questions/67529286/how-to-add-a-needle-or-dial-to-gauge-indicator-in-plotly-js
-- <em>For general plotly.js info:</em>
+- <u>For general plotly.js info:</u>
     - https://plotly.com/javascript/
